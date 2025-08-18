@@ -47,9 +47,11 @@
 		
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.*" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.*" />
+		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.59" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.*" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.*" />
 		<PackageReference Include="Verify.CommunityToolkit.Mvvm" Version="1.1.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.82" />
 
 	</ItemGroup>
 	

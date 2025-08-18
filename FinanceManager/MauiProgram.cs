@@ -3,7 +3,7 @@ using FinanceManager.Pages;
 using FinanceManager.Services;
 using FinanceManager.ViewModels;
 using CommunityToolkit.Maui;
-
+using SkiaSharp.Views.Maui.Controls.Hosting; 
 
 namespace FinanceManager
 {
@@ -15,6 +15,7 @@ namespace FinanceManager
 
             builder
                 .UseMauiApp<App>()
+                .UseSkiaSharp()
                 .UseMauiCommunityToolkit()
 
                 .ConfigureFonts(fonts =>

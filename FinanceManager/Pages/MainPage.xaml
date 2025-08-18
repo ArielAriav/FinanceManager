@@ -4,15 +4,19 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
     Title="Budget">
 
     <VerticalStackLayout Padding="16" Spacing="12">
 
-        <!-- רשימת תנועות, אם אין אז ריק -->
+        <!-- List of transactions, if none then empty -->
         <CollectionView ItemsSource="{Binding Transactions}" SelectionMode="None" HeightRequest="600">
             <CollectionView.EmptyView>
                 <VerticalStackLayout Spacing="8" Padding="24"
                                      HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label FontSize="Medium" HorizontalOptions="Center" HorizontalTextAlignment="Center">אין תנועות עדיין</Label>
+                    <Image Source="no_data.png" WidthRequest="200" HeightRequest="200" Scale="1.4" HorizontalOptions="Center" />
+
 
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
