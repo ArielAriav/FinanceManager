@@ -1,9 +1,10 @@
-﻿using FinanceManager.Helpers;
+﻿using CommunityToolkit.Maui;
+using FinanceManager.Helpers;
 using FinanceManager.Pages;
 using FinanceManager.Services;
 using FinanceManager.ViewModels;
-using CommunityToolkit.Maui;
-using SkiaSharp.Views.Maui.Controls.Hosting; 
+using System.Globalization;
+
 
 namespace FinanceManager
 {
@@ -11,11 +12,13 @@ namespace FinanceManager
     {
         public static MauiApp CreateMauiApp()
         {
+            var he = CultureInfo.GetCultureInfo("he-IL");
+            CultureInfo.DefaultThreadCurrentCulture = he;
+            CultureInfo.DefaultThreadCurrentUICulture = he;
             var builder = MauiApp.CreateBuilder();
 
             builder
                 .UseMauiApp<App>()
-                .UseSkiaSharp()
                 .UseMauiCommunityToolkit()
 
                 .ConfigureFonts(fonts =>
