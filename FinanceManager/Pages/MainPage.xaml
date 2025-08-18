@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FinanceManager.Pages.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="Budget">
+
+    <VerticalStackLayout Padding="16" Spacing="12">
+
+        <!-- רשימת תנועות, אם אין אז ריק -->
+        <CollectionView ItemsSource="{Binding Transactions}" SelectionMode="None" HeightRequest="600">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Spacing="8" Padding="24"
+                                     HorizontalOptions="Center" VerticalOptions="Center">
+
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="6">
+                        <Label Grid.Column="0"
+                               Text="{Binding TypeText}" 
+                               FontAttributes="Bold" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="{Binding CategoryName}" />
+                            <Label Text="{Binding WhenText}" FontSize="12" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2"
+                               Text="{Binding AmountText}" 
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="End" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Add buttons -->
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+            <Button Grid.Column="0" Text="הוספת הוצאה" Clicked="OnAddExpenseClicked" />
+            <Button Grid.Column="1" Text="הוספת הכנסה" Clicked="OnAddIncomeClicked" />
+        </Grid>
+
+    </VerticalStackLayout>
+</ContentPage>
