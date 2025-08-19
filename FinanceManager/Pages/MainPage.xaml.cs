@@ -43,14 +43,11 @@ public partial class MainPage : ContentPage
         await _vm.LoadAsync();
     }
 
-    // Open the Add Expense modal page
-    //private async void OnAddExpenseClicked(object sender, EventArgs e)
-       // => await Navigation.PushModalAsync(new AddEntryPage(EntryType.Expense));
-
+    // Open the My Envelopes page
     private async void OnMyEnvelopesClicked(object sender, EventArgs e)
-        => await Navigation.PushModalAsync(new AddEntryPage(EntryType.Expense));
+        => await Navigation.PushModalAsync(new MyEnvelopesPage());
 
-    // Open the Add Income modal page
-    private async void OnAddIncomeClicked(object sender, EventArgs e)
-        => await Navigation.PushModalAsync(new AddEntryPage(EntryType.Income));
+    // Open the Add Transaction page
+    private async void OnAddTransactionClicked(object sender, EventArgs e)
+        => await Navigation.PushModalAsync(new AddTransactionPage());
 }

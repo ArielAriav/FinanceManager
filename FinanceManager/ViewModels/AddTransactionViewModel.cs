@@ -3,11 +3,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using FinanceManager.Models;
 using FinanceManager.Services;
-using System.Globalization; 
+using System.Globalization;
 
 namespace FinanceManager.ViewModels;
 
-public class AddEntryViewModel : INotifyPropertyChanged
+public class AddTransactionViewModel : INotifyPropertyChanged
 {
     private readonly LocalDbService _db;
     private readonly TransactionDbService _txService;
@@ -45,7 +45,7 @@ public class AddEntryViewModel : INotifyPropertyChanged
 
     public EntryType EntryType { get; private set; } = EntryType.Expense;
 
-    public AddEntryViewModel(LocalDbService db, MonthService month)
+    public AddTransactionViewModel(LocalDbService db, MonthService month)
     {
         _db = db;
         _month = month;
@@ -93,7 +93,7 @@ public class AddEntryViewModel : INotifyPropertyChanged
             CategoryId = SelectedCategory.Id,
             Type = EntryType,
             Amount = Math.Abs(amount),
-            OccurredAtUtc = localMidnight, 
+            OccurredAtUtc = localMidnight,
             Note = string.IsNullOrWhiteSpace(Note) ? null : Note!.Trim()
         };
 

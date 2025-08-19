@@ -54,8 +54,8 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<MauiXaml Update="Pages\AddEntryPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
+		<MauiXaml Update="Pages\AddTransactionPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Pages\BudgetWizardPage.xaml">
 			<Generator>MSBuild:Compile</Generator>

@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Window xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FinanceManager.Pages.MyEnvelopesPage"
-             Title="MyEnvelopesPage">
-</Window>
+             Title="My Envelopes">
+    <VerticalStackLayout Padding="16" Spacing="12">
+        <Label 
+            Text="My Envelopes"
+            FontSize="24"
+            FontAttributes="Bold"
+            HorizontalOptions="Center" />
+
+        <CollectionView x:Name="EnvelopesCollectionView"
+                        ItemsSource="{Binding Envelopes}"
+                        SelectionMode="Single">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="12" Margin="0,4" BorderColor="#cccccc" CornerRadius="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
+                                <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1"
+                                   Text="{Binding Balance, StringFormat='${0:F2}'}"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   TextColor="Green" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Text="Add Envelope"
+                Command="{Binding AddEnvelopeCommand}"
+                HorizontalOptions="Fill" />
+
+        <Label Text="{Binding EmptyMessage}"
+               IsVisible="{Binding IsEnvelopeListEmpty}"
+               HorizontalOptions="Center"
+               TextColor="Gray"
+               FontSize="16" />
+    </VerticalStackLayout>
+</ContentPage>
