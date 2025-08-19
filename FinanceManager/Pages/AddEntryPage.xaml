@@ -3,34 +3,45 @@
     x:Class="FinanceManager.Pages.AddEntryPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Add Entry">
+    xmlns:sys="clr-namespace:System;assembly=System.Private.CoreLib"
+    Title="הוספת תנועה"
+    FlowDirection="RightToLeft">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="14">
-            <Label Text="Category" />
+
+            <Label Text="קטגוריה" />
             <Picker
                 ItemsSource="{Binding Categories}"
                 ItemDisplayBinding="{Binding Name}"
                 SelectedItem="{Binding SelectedCategory}" />
 
-            <Label Text="Amount" />
+            <Label Text="סכום" />
             <Entry
                 Text="{Binding AmountText}"
                 Keyboard="Numeric"
-                Placeholder="0.00" />
+                Placeholder="0.00"
+                ClearButtonVisibility="WhileEditing" />
 
-            <Label Text="Note" />
+            <!-- חדש: תאריך בלבד -->
+            <Label Text="תאריך" />
+            <DatePicker
+                Date="{Binding Date}"
+                MaximumDate="{x:Static sys:DateTime.Today}" />
+
+            <Label Text="הערה" />
             <Editor
                 Text="{Binding Note}"
                 AutoSize="TextChanges"
                 MinimumHeightRequest="80" />
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
-                <Button Text="Cancel" Grid.Column="0"
+                <Button Text="ביטול" Grid.Column="0"
                         Command="{Binding CancelCommand}" />
-                <Button Text="Save" Grid.Column="1"
+                <Button Text="שמירה" Grid.Column="1"
                         Command="{Binding SaveCommand}" />
             </Grid>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -44,7 +44,10 @@ public partial class MainPage : ContentPage
     }
 
     // Open the Add Expense modal page
-    private async void OnAddExpenseClicked(object sender, EventArgs e)
+    //private async void OnAddExpenseClicked(object sender, EventArgs e)
+       // => await Navigation.PushModalAsync(new AddEntryPage(EntryType.Expense));
+
+    private async void OnMyEnvelopesClicked(object sender, EventArgs e)
         => await Navigation.PushModalAsync(new AddEntryPage(EntryType.Expense));
 
     // Open the Add Income modal page

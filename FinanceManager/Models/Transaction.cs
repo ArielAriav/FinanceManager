@@ -13,9 +13,9 @@ public class Transaction
 {
     [PrimaryKey, AutoIncrement] public int Id { get; set; }
     [Indexed] public int CategoryId { get; set; }
-    [Indexed] public int YearMonth { get; set; }     // 202508
-    [NotNull] public EntryType Type { get; set; }    // הוצאה או הכנסה
-    [NotNull] public decimal Amount { get; set; }    // חיובי תמיד
+    [Indexed] public int YearMonth { get; set; }     
+    [NotNull] public EntryType Type { get; set; }    // Expense or income
+    [NotNull] public decimal Amount { get; set; }    // Always positive
     [NotNull] public DateTime OccurredAtUtc { get; set; } = DateTime.UtcNow;
     public string? Note { get; set; }
 }

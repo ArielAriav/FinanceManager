@@ -50,38 +50,40 @@
 
         <!-- The list occupies the entire middle area. -->
         <CollectionView Grid.Row="1"
-                    ItemsSource="{Binding Transactions}"
-                    SelectionMode="None"
-                    BackgroundColor="White">
+                        ItemsSource="{Binding Transactions}"
+                        SelectionMode="None"
+                        BackgroundColor="White">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="6" />
             </CollectionView.ItemsLayout>
 
+            <!-- There is no data for the month -->
             <CollectionView.EmptyView>
                 <Grid Padding="16" RowDefinitions="Auto,Auto"
-              HorizontalOptions="Center" VerticalOptions="Center">
+                      HorizontalOptions="Center" VerticalOptions="Center">
                     <Label Grid.Row="0"
-                 Text="עדיין אין תנועות לחודש זה"
-                 FontSize="Medium"
-                 HorizontalTextAlignment="Center" />
+                           Text="עדיין אין תנועות לחודש זה"
+                           FontSize="Medium"
+                           HorizontalTextAlignment="Center" />
                     <Image Grid.Row="1"
-                 Source="no_data.png"
-                 Aspect="AspectFit"
-                 HorizontalOptions="Center" />
+                           Source="no_data.png"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center" />
                 </Grid>
             </CollectionView.EmptyView>
 
+            <!-- There is data for the month -->
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="6" ColumnSpacing="8"
-                ColumnDefinitions="Auto,*,Auto">
+                          ColumnDefinitions="Auto,*,Auto">
                         <Label Grid.Column="0" Text="{Binding TypeText}" FontAttributes="Bold" />
                         <VerticalStackLayout Grid.Column="1" Spacing="2">
                             <Label Text="{Binding CategoryName}" />
                             <Label Text="{Binding WhenText}" FontSize="12" />
                         </VerticalStackLayout>
                         <Label Grid.Column="2" Text="{Binding AmountText}"
-                   FontAttributes="Bold" HorizontalTextAlignment="End" />
+                               FontAttributes="Bold" HorizontalTextAlignment="End" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
@@ -92,13 +94,12 @@
           ColumnDefinitions="*,*"
           RowDefinitions="Auto,Auto"
           ColumnSpacing="12" RowSpacing="10">
-            <Button Grid.Column="0" Grid.Row="0" Text="הוספת הוצאה" HeightRequest="44"
-              Clicked="OnAddExpenseClicked" />
-            <Button Grid.Column="1" Grid.Row="0" Text="הוספת הכנסה" HeightRequest="44"
+            <Button Grid.Column="0" Grid.Row="0" Text="המעטפות שלי" HeightRequest="44"
+              Clicked="OnMyEnvelopesClicked" />
+            <Button Grid.Column="1" Grid.Row="0" Text="הוספת הכנסה/הוצאה" HeightRequest="44"
               Clicked="OnAddIncomeClicked" />
             <Button Grid.Column="0" Grid.Row="1" Text="ניהול קטגוריות" HeightRequest="44" />
-            <Button Grid.Column="1" Grid.Row="1" Text="המעטפות שלי" HeightRequest="44" />
+            <Button Grid.Column="1" Grid.Row="1" Text="ניהול תקציבים" HeightRequest="44" />
         </Grid>
-
     </Grid>
 </ContentPage>
