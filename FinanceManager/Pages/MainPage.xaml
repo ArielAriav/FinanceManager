@@ -3,43 +3,103 @@
     x:Class="FinanceManager.Pages.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    Title="Budget">
+    xmlns:vm="clr-namespace:FinanceManager.ViewModels"
+    x:DataType="vm:MainViewModel"
+    Title="Finance Manager">
 
-    <VerticalStackLayout Padding="16" Spacing="12">
+    <Grid Padding="16" RowSpacing="12" BackgroundColor="White"
+        RowDefinitions="Auto,*,Auto">
 
-        <!-- רשימת תנועות, אם אין אז ריק -->
-        <CollectionView ItemsSource="{Binding Transactions}" SelectionMode="None" HeightRequest="600">
+        <!-- Header: previous | month | next -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="48,*,48"
+              Padding="0,8"
+              HorizontalOptions="Fill"
+              VerticalOptions="Center">
+
+            <!-- Arrow to previous month  -->
+            <Button Grid.Column="0"
+                    Text="❮"
+                    TextColor="grey"
+                    FontSize="22"
+                    WidthRequest="48" HeightRequest="48"
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding PrevMonthCommand}" />
+
+            <!-- Name of the month in the center -->
+            <Label  Grid.Column="1"
+                    Text="{Binding DisplayMonth}"
+                    TextColor="grey"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    HorizontalTextAlignment="Center"
+                    VerticalTextAlignment="Center" />
+
+            <!-- Arrow to next month -->
+            <Button Grid.Column="2"
+                    Text="❯"
+                    TextColor="grey"
+                    FontSize="22"
+                    WidthRequest="48" HeightRequest="48"
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding NextMonthCommand}"
+                    IsEnabled="{Binding CanGoNext}" />
+        </Grid>
+
+        <!-- The list occupies the entire middle area. -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Transactions}"
+                        SelectionMode="None"
+                        BackgroundColor="White">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="6" />
+            </CollectionView.ItemsLayout>
+
+            <!-- There is no data for the month -->
             <CollectionView.EmptyView>
-                <VerticalStackLayout Spacing="8" Padding="24"
-                                     HorizontalOptions="Center" VerticalOptions="Center">
-
-                </VerticalStackLayout>
+                <Grid Padding="16" RowDefinitions="Auto,Auto"
+                      HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Grid.Row="0"
+                           Text="עדיין אין תנועות לחודש זה"
+                           FontSize="Medium"
+                           HorizontalTextAlignment="Center" />
+                    <Image Grid.Row="1"
+                           Source="no_data.png"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center" />
+                </Grid>
             </CollectionView.EmptyView>
+
+            <!-- There is data for the month -->
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="6">
-                        <Label Grid.Column="0"
-                               Text="{Binding TypeText}" 
-                               FontAttributes="Bold" />
+                    <Grid Padding="6" ColumnSpacing="8"
+                          ColumnDefinitions="Auto,*,Auto">
+                        <Label Grid.Column="0" Text="{Binding TypeText}" FontAttributes="Bold" />
                         <VerticalStackLayout Grid.Column="1" Spacing="2">
                             <Label Text="{Binding CategoryName}" />
                             <Label Text="{Binding WhenText}" FontSize="12" />
                         </VerticalStackLayout>
-                        <Label Grid.Column="2"
-                               Text="{Binding AmountText}" 
-                               FontAttributes="Bold"
-                               HorizontalTextAlignment="End" />
+                        <Label Grid.Column="2" Text="{Binding AmountText}"
+                               FontAttributes="Bold" HorizontalTextAlignment="End" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- Add buttons -->
-        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-            <Button Grid.Column="0" Text="הוספת הוצאה" Clicked="OnAddExpenseClicked" />
-            <Button Grid.Column="1" Text="הוספת הכנסה" Clicked="OnAddIncomeClicked" />
+        <!-- Buttons at the bottom, always visible -->
+        <Grid Grid.Row="2"
+          ColumnDefinitions="*,*"
+          RowDefinitions="Auto,Auto"
+          ColumnSpacing="12" RowSpacing="10">
+            <Button Grid.Column="0" Grid.Row="0" Text="המעטפות שלי" HeightRequest="44"
+              Clicked="OnMyEnvelopesClicked" />
+            <Button Grid.Column="1" Grid.Row="0" Text="הוספת הכנסה/הוצאה" HeightRequest="44"
+              Clicked="OnAddTransactionClicked" />
+            <Button Grid.Column="0" Grid.Row="1" Text="ניהול קטגוריות" HeightRequest="44" />
+            <Button Grid.Column="1" Grid.Row="1" Text="ניהול תקציבים" HeightRequest="44" />
         </Grid>
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

@@ -9,6 +9,7 @@ namespace FinanceManager.Services
 {
     public class LocalDbService
     {
+        public SQLiteAsyncConnection Conn => _conn;
         private const string DbName = "finance.db";
         private readonly SQLiteAsyncConnection _conn;
 
@@ -24,10 +25,27 @@ namespace FinanceManager.Services
             await _conn.CreateTableAsync<Models.Category>();
             await _conn.CreateTableAsync<Models.Budget>();
             await _conn.CreateTableAsync<Models.Transaction>();
+            await _conn.CreateTableAsync<Models.Envelope>();
+            await _conn.CreateTableAsync<Models.EnvelopeEntry>();
             await _conn.ExecuteAsync("CREATE TABLE IF NOT EXISTS __Meta (Key TEXT PRIMARY KEY, Value TEXT)");
+
+            await _conn.ExecuteAsync("CREATE INDEX IF NOT EXISTS IX_EnvelopeEntry_Env_YearMonth ON EnvelopeEntry(EnvelopeId, YearMonth)");
+            await _conn.ExecuteAsync("CREATE INDEX IF NOT EXISTS IX_EnvelopeEntry_Env_Occurred ON EnvelopeEntry(EnvelopeId, OccurredAtUtc)");
+
+            // Stability and basic rules
+            await _conn.ExecuteAsync("PRAGMA foreign_keys=ON");
+            var _ = await _conn.ExecuteScalarAsync<string>("PRAGMA journal_mode = WAL;");
+
+            // Indexes for quick searches by month and time
+            await _conn.ExecuteAsync("CREATE INDEX IF NOT EXISTS IX_Transaction_YearMonth ON [Transaction](YearMonth)");
+            await _conn.ExecuteAsync("CREATE INDEX IF NOT EXISTS IX_Transaction_Category_YearMonth ON [Transaction](CategoryId, YearMonth)");
+            await _conn.ExecuteAsync("CREATE INDEX IF NOT EXISTS IX_Transaction_OccurredAtUtc ON [Transaction](OccurredAtUtc)");
+
+            // One budget per category each month
+            await _conn.ExecuteAsync("CREATE UNIQUE INDEX IF NOT EXISTS IX_Budget_Category_YearMonth ON [Budget](CategoryId, YearMonth)");
         }
 
-        public SQLiteAsyncConnection Conn => _conn;
+        
 
         // Meta
         public Task<string?> GetMetaAsync(string key) =>
@@ -42,29 +60,6 @@ namespace FinanceManager.Services
         public Task<int> DeleteAsync<T>(T entity) where T : new() => _conn.DeleteAsync(entity);
         public Task<List<T>> GetAllAsync<T>() where T : new() => _conn.Table<T>().ToListAsync();
 
-        // Amount of expenses for a given month by category
-        public async Task<decimal> SumExpensesAsync(int categoryId, int yearMonth)
-        {
-            // We will only take Type = Expense
-            var sql = "SELECT IFNULL(SUM(Amount),0) FROM [Transaction] WHERE CategoryId=? AND YearMonth=? AND Type=?";
-            return await _conn.ExecuteScalarAsync<decimal>(sql, categoryId, yearMonth, Models.EntryType.Expense);
-        }
-
-        // List of transactions by category and by month
-        public Task<List<Models.Transaction>> GetTransactionsAsync(int categoryId, int yearMonth) =>
-            _conn.Table<Models.Transaction>()
-                .Where(t => t.CategoryId == categoryId && t.YearMonth == yearMonth)
-                .OrderByDescending(t => t.OccurredAtUtc)
-                .ToListAsync();
-
-        // Active budget per category and month
-        public async Task<Models.Budget?> GetBudgetAsync(int categoryId, int yearMonth)
-        {
-            var result = await _conn.Table<Models.Budget>()
-                .Where(b => b.CategoryId == categoryId && b.YearMonth == yearMonth)
-                .FirstOrDefaultAsync();
-
-            return result; // can be budget or null if not found
-        }
     }
+
 }

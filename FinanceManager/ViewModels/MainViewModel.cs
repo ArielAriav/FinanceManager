@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FinanceManager.Models;
 using FinanceManager.Services;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace FinanceManager.ViewModels;
 
@@ -12,45 +14,73 @@ public partial class MainViewModel : ObservableObject
 
     public ObservableCollection<TransactionRow> Transactions { get; } = new();
 
+    // Beginning of the current month
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayMonth))]
+    [NotifyPropertyChangedFor(nameof(CanGoNext))]
+    private DateTime currentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+    // Hebrew month name
+    public string DisplayMonth => currentMonth.ToString("MMMM yyyy", CultureInfo.GetCultureInfo("he-IL"));
+
+    // Not progressing beyond the current month
+    public bool CanGoNext =>
+        currentMonth.AddMonths(1) <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
     public MainViewModel(LocalDbService db, MonthService month)
     {
         _db = db;
         _month = month;
     }
 
-   
-    public record TransactionRow(
-        int Id,
-        string TypeText,
-        string CategoryName,
-        string AmountText,
-        string WhenText
-    );
+    public record TransactionRow(int Id, string TypeText, string CategoryName, string AmountText, string WhenText);
 
     public async Task LoadAsync()
     {
         Transactions.Clear();
 
-        // נטען כל הקטגוריות למפה מהירה
+        // begin and end of selected month in local time, then convert to UTC
+        var startLocal = new DateTime(CurrentMonth.Year, CurrentMonth.Month, 1, 0, 0, 0, DateTimeKind.Local);
+        var endLocal = startLocal.AddMonths(1);
+        var startUtc = startLocal.ToUniversalTime();
+        var endUtc = endLocal.ToUniversalTime();
+
         var cats = await _db.GetAllAsync<Category>();
         var catMap = cats.ToDictionary(c => c.Id, c => c.Name);
 
-        // כל התנועות, ממוין לפי תאריך יורד
         var all = await _db.GetAllAsync<Transaction>();
-        foreach (var t in all.OrderByDescending(t => t.OccurredAtUtc))
+
+        var monthItems = all
+            .Where(t => t.OccurredAtUtc >= startUtc && t.OccurredAtUtc < endUtc)
+            .OrderByDescending(t => t.OccurredAtUtc);
+
+        var culture = CultureInfo.GetCultureInfo("he-IL");
+
+        foreach (var t in monthItems)
         {
             var name = catMap.TryGetValue(t.CategoryId, out var nm) ? nm : "קטגוריה";
             var typeText = t.Type == EntryType.Expense ? "הוצאה" : "הכנסה";
-            var amountText = string.Format("{0:C}", t.Amount * (t.Type == EntryType.Expense ? -1 : 1));
-            var whenText = t.OccurredAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
+            var signed = t.Type == EntryType.Expense ? -t.Amount : t.Amount;
+            var amountText = string.Format(culture, "{0:C}", signed);
+            var whenText = t.OccurredAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm", culture);
 
-            Transactions.Add(new TransactionRow(
-                t.Id,
-                typeText,
-                name,
-                amountText,
-                whenText
-            ));
+            Transactions.Add(new TransactionRow(t.Id, typeText, name, amountText, whenText));
         }
+    }
+
+
+    [RelayCommand]
+    private async Task PrevMonthAsync()
+    {
+        CurrentMonth = currentMonth.AddMonths(-1); 
+        await LoadAsync();
+    }
+
+    [RelayCommand]
+    private async Task NextMonthAsync()
+    {
+        if (!CanGoNext) return;
+        CurrentMonth = currentMonth.AddMonths(1);
+        await LoadAsync();
     }
 }

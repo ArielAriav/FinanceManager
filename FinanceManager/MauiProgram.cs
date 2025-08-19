@@ -1,8 +1,9 @@
-﻿using FinanceManager.Helpers;
+﻿using CommunityToolkit.Maui;
+using FinanceManager.Helpers;
 using FinanceManager.Pages;
 using FinanceManager.Services;
 using FinanceManager.ViewModels;
-using CommunityToolkit.Maui;
+using System.Globalization;
 
 
 namespace FinanceManager
@@ -11,6 +12,9 @@ namespace FinanceManager
     {
         public static MauiApp CreateMauiApp()
         {
+            var he = CultureInfo.GetCultureInfo("he-IL");
+            CultureInfo.DefaultThreadCurrentCulture = he;
+            CultureInfo.DefaultThreadCurrentUICulture = he;
             var builder = MauiApp.CreateBuilder();
 
             builder
@@ -26,21 +30,25 @@ namespace FinanceManager
             // Services
             builder.Services.AddSingleton<LocalDbService>();
             builder.Services.AddSingleton<MonthService>();
-            builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddSingleton<EnvelopeDbService>();
+            builder.Services.AddSingleton<TransactionDbService>();
+            builder.Services.AddSingleton<BudgetDbService>();
 
 
             // ViewModels
             builder.Services.AddTransient<MainViewModel>();
             builder.Services.AddTransient<CategoryDetailsViewModel>();
             builder.Services.AddTransient<BudgetWizardViewModel>();
-            builder.Services.AddTransient<AddEntryViewModel>();
+            builder.Services.AddTransient<AddTransactionViewModel>();
+            builder.Services.AddTransient<MyEnvelopesViewModel>();
 
             // Pages
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<CategoryDetailsPage>();
             builder.Services.AddTransient<BudgetWizardPage>();
-            builder.Services.AddTransient<AddEntryPage>();
+            builder.Services.AddTransient<AddTransactionPage>();
+            builder.Services.AddTransient<MyEnvelopesPage>();
 
             // Build and expose the ServiceProvider for ServiceHelper
             var app = builder.Build();

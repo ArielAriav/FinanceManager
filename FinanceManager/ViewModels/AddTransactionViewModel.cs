@@ -3,12 +3,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using FinanceManager.Models;
 using FinanceManager.Services;
+using System.Globalization;
 
 namespace FinanceManager.ViewModels;
 
-public class AddEntryViewModel : INotifyPropertyChanged
+public class AddTransactionViewModel : INotifyPropertyChanged
 {
     private readonly LocalDbService _db;
+    private readonly TransactionDbService _txService;
     private readonly MonthService _month;
 
     public ObservableCollection<Category> Categories { get; } = new();
@@ -34,12 +36,20 @@ public class AddEntryViewModel : INotifyPropertyChanged
         set { _note = value; OnPropertyChanged(); }
     }
 
+    private DateTime _date = DateTime.Today;
+    public DateTime Date
+    {
+        get => _date;
+        set { _date = value.Date; OnPropertyChanged(); }
+    }
+
     public EntryType EntryType { get; private set; } = EntryType.Expense;
 
-    public AddEntryViewModel(LocalDbService db, MonthService month)
+    public AddTransactionViewModel(LocalDbService db, MonthService month)
     {
         _db = db;
         _month = month;
+        _txService = new TransactionDbService(db.Conn);
     }
 
     public void SetType(EntryType type) => EntryType = type;
@@ -57,27 +67,39 @@ public class AddEntryViewModel : INotifyPropertyChanged
     {
         if (SelectedCategory is null)
         {
-            await Application.Current!.MainPage!.DisplayAlert("Error", "Choose category", "OK");
-            return;
-        }
-        if (!decimal.TryParse(AmountText, out var amount) || amount <= 0)
-        {
-            await Application.Current!.MainPage!.DisplayAlert("Error", "Enter valid amount", "OK");
+            await Application.Current!.MainPage!.DisplayAlert("שגיאה", "בחרי קטגוריה", "אישור");
             return;
         }
 
-        var ym = await _month.EnsureMonthInitializedAsync();
+        if (!decimal.TryParse(AmountText, out var amount) || amount <= 0)
+        {
+            await Application.Current!.MainPage!.DisplayAlert("שגיאה", "הזיני סכום תקין", "אישור");
+            return;
+        }
+
+        if (Date.Date > DateTime.Today)
+        {
+            await Application.Current!.MainPage!.DisplayAlert("שגיאה", "אי אפשר לבחור תאריך עתידי", "אישור");
+            return;
+        }
+
+        // אם אתחול חודש חשוב לצד תקציבים, נשאיר את הקריאה בלי להשתמש בתוצאה
+        _ = await _month.EnsureMonthInitializedAsync();
+
+        var localMidnight = new DateTime(Date.Year, Date.Month, Date.Day, 0, 0, 0, DateTimeKind.Local);
+
         var tx = new Transaction
         {
             CategoryId = SelectedCategory.Id,
-            YearMonth = ym,
             Type = EntryType,
             Amount = Math.Abs(amount),
-            OccurredAtUtc = DateTime.UtcNow,
+            OccurredAtUtc = localMidnight,
             Note = string.IsNullOrWhiteSpace(Note) ? null : Note!.Trim()
         };
-        await _db.InsertAsync(tx);
-        await Application.Current!.MainPage!.DisplayAlert("Saved", "Entry saved", "OK");
+
+        await _txService.AddTransactionAsync(tx);
+
+        await Application.Current!.MainPage!.DisplayAlert("נשמר", "התנועה נשמרה", "אישור");
         await Application.Current!.MainPage!.Navigation.PopModalAsync();
     }
 

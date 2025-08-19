@@ -2,9 +2,11 @@
     x:Class="FinanceManager.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:pages="clr-namespace:FinanceManager.Pages">
+    xmlns:pages="clr-namespace:FinanceManager.Pages"
+    Shell.BackgroundColor="#512BD4"
+    Shell.TitleColor="White">
 
-    <ShellContent Title="Home" Route="main">
-        <pages:MainPage />
-    </ShellContent>
+    <ShellContent Title="Home" Route="main"
+              ContentTemplate="{DataTemplate pages:MainPage}" />
+
 </Shell>
