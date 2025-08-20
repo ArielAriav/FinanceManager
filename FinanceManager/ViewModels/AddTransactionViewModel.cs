@@ -1,9 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using FinanceManager.Models;
+﻿using FinanceManager.Models;
 using FinanceManager.Services;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace FinanceManager.ViewModels;
 
@@ -12,6 +13,8 @@ public class AddTransactionViewModel : INotifyPropertyChanged
     private readonly LocalDbService _db;
     private readonly TransactionDbService _txService;
     private readonly MonthService _month;
+    public ICommand SaveCommand { get; }
+    public ICommand CancelCommand { get; }
 
     public ObservableCollection<Category> Categories { get; } = new();
 
@@ -50,6 +53,9 @@ public class AddTransactionViewModel : INotifyPropertyChanged
         _db = db;
         _month = month;
         _txService = new TransactionDbService(db.Conn);
+
+        SaveCommand = new Command(async () => await SaveAsync());
+        CancelCommand = new Command(async () => await CancelAsync());
     }
 
     public void SetType(EntryType type) => EntryType = type;

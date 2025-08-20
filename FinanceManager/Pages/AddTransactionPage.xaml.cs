@@ -13,4 +13,10 @@ public partial class AddTransactionPage : ContentPage
         var vm = ServiceHelper.Get<AddTransactionViewModel>();
         BindingContext = vm;
     }
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is AddTransactionViewModel vm)
+            await vm.LoadAsync();
+    }
 }
