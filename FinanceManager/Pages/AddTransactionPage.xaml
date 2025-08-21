@@ -8,10 +8,15 @@
         <VerticalStackLayout Padding="20" Spacing="14">
 
             <Label Text="קטגוריה" />
-            <Picker
-            ItemsSource="{Binding Categories}"
-            ItemDisplayBinding="{Binding Name}"
-            SelectedItem="{Binding SelectedCategory}" />
+            <Label Text="אין קטגוריות זמינות"
+                   IsVisible="{Binding NoCategories}" 
+                   TextColor="Gray" FontAttributes="Italic"/>
+
+            <Picker ItemsSource="{Binding Categories}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedCategory}"
+                    IsVisible="{Binding HasCategories}" />
+           
 
             <Label Text="סכום" />
             <Entry
@@ -20,11 +25,11 @@
             Placeholder="0.00"
             ClearButtonVisibility="WhileEditing" />
 
-            <!-- חדש: תאריך בלבד -->
             <Label Text="תאריך" />
             <DatePicker
             Date="{Binding Date}"
-            MaximumDate="{x:Static sys:DateTime.Today}" />
+            MinimumDate="{Binding MonthStart}"
+            MaximumDate="{Binding MonthEnd}" />
 
             <Label Text="הערה" />
             <Editor
@@ -38,7 +43,6 @@
                 <Button Text="שמירה" Grid.Column="1"
                     Command="{Binding SaveCommand}" />
             </Grid>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -13,8 +13,14 @@ public class AddTransactionViewModel : INotifyPropertyChanged
     private readonly LocalDbService _db;
     private readonly TransactionDbService _txService;
     private readonly MonthService _month;
+    public bool HasCategories => Categories.Any();
+    public bool NoCategories => !HasCategories;
+
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
+    public DateTime MonthStart => new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+
+    public DateTime MonthEnd => MonthStart.AddMonths(1).AddDays(-1);
 
     public ObservableCollection<Category> Categories { get; } = new();
 
