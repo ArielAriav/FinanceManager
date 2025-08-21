@@ -9,10 +9,10 @@
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Padding="16" Spacing="12">
 
-                <Label Text="שם קטגוריה" FontSize="20" HorizontalOptions="End" />
+                <Label Text="הוספת קטגוריה" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
                 <Entry Text="{Binding Name}"
                        Placeholder="לדוגמה: מזון"
-                       FontSize="16"
+                       FontSize="18"
                        ClearButtonVisibility="WhileEditing"
                        FlowDirection="LeftToRight"
                        HorizontalTextAlignment="End" /> 
@@ -22,7 +22,7 @@
                     <Button Grid.Column="1" Text="חדש" Command="{Binding NewCommand}" />
                 </Grid>
 
-                <Label Text="קטגוריות קיימות" Margin="0,16,0,0" FontSize="20" HorizontalOptions="End" />
+                <Label Text="קטגוריות קיימות" Margin="0,16,0,0" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
 
                 <CollectionView ItemsSource="{Binding Items}"
                                 SelectionMode="Single"

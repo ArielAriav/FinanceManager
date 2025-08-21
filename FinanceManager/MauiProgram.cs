@@ -26,6 +26,9 @@ namespace FinanceManager
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("Rubik-Regular.ttf", "Rubik");
+                    fonts.AddFont("Rubik-Medium.ttf", "RubikMedium");
+                    fonts.AddFont("Rubik-Bold.ttf", "RubikBold");
                 });
 
             // Services

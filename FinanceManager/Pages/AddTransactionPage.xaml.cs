@@ -19,4 +19,8 @@ public partial class AddTransactionPage : ContentPage
         if (BindingContext is AddTransactionViewModel vm)
             await vm.LoadAsync();
     }
+
+    // Open the Category Management page
+    private async void OnManageCategoriesClicked(object sender, EventArgs e)
+        => await Navigation.PushModalAsync(new ManageCategoriesPage());
 }
