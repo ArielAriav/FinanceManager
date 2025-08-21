@@ -50,4 +50,12 @@ public partial class MainPage : ContentPage
     // Open the Add Transaction page
     private async void OnAddTransactionClicked(object sender, EventArgs e)
         => await Navigation.PushModalAsync(new AddTransactionPage());
+
+    // Open the Category Management page
+    private async void OnManageCategoriesClicked(object sender, EventArgs e)
+        => await Navigation.PushModalAsync(new ManageCategoriesPage());
+
+    // Open Budget Management page
+    private async void OnManageBudgetClicked(object sender, EventArgs e)
+        => await Navigation.PushModalAsync(new ManageBudgetPage());
 }

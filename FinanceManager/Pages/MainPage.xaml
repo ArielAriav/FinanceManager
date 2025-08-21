@@ -62,7 +62,7 @@
                 <Grid Padding="16" RowDefinitions="Auto,Auto"
                       HorizontalOptions="Center" VerticalOptions="Center">
                     <Label Grid.Row="0"
-                           Text="עדיין אין תנועות לחודש זה"
+                           Text="אין תנועות לחודש זה"
                            FontSize="Medium"
                            HorizontalTextAlignment="Center" />
                     <Image Grid.Row="1"
@@ -98,8 +98,10 @@
               Clicked="OnMyEnvelopesClicked" />
             <Button Grid.Column="1" Grid.Row="0" Text="הוספת הכנסה/הוצאה" HeightRequest="44"
               Clicked="OnAddTransactionClicked" />
-            <Button Grid.Column="0" Grid.Row="1" Text="ניהול קטגוריות" HeightRequest="44" />
-            <Button Grid.Column="1" Grid.Row="1" Text="ניהול תקציבים" HeightRequest="44" />
+            <Button Grid.Column="0" Grid.Row="1" Text="ניהול קטגוריות" HeightRequest="44"
+                    Clicked="OnManageCategoriesClicked"/>
+            <Button Grid.Column="1" Grid.Row="1" Text="ניהול תקציבים" HeightRequest="44"
+                    Clicked="OnManageBudgetClicked"/>
         </Grid>
     </Grid>
 </ContentPage>

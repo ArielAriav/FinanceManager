@@ -7,30 +7,50 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="14">
 
-            <Label Text="קטגוריה" />
-            <Picker
-            ItemsSource="{Binding Categories}"
-            ItemDisplayBinding="{Binding Name}"
-            SelectedItem="{Binding SelectedCategory}" />
+            <Label Text="קטגוריה" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
+            <Label Text="אין קטגוריות זמינות"
+                   FlowDirection="RightToLeft"
+                   FontSize="18"
+                   IsVisible="{Binding NoCategories}" 
+                   TextColor="Gray"/>
 
-            <Label Text="סכום" />
+            <Picker ItemsSource="{Binding Categories}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedCategory}"
+                    IsVisible="{Binding HasCategories}" />
+
+            <Button Text="לניהול הקטגוריות שלי"
+                    HorizontalOptions="End"
+                    BackgroundColor="Transparent"
+                    TextColor="#6750A4"
+                    Padding="0"
+                    FontAttributes="Bold"
+                    Clicked="OnManageCategoriesClicked" />
+
+            <Label Text="סכום" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold"/>
             <Entry
-            Text="{Binding AmountText}"
-            Keyboard="Numeric"
-            Placeholder="0.00"
-            ClearButtonVisibility="WhileEditing" />
+                Text="{Binding AmountText}"
+                FlowDirection="RightToLeft"
+                FontSize="18"
+                Keyboard="Numeric"
+                Placeholder="0.00"
+                ClearButtonVisibility="WhileEditing" />
 
-            <!-- חדש: תאריך בלבד -->
-            <Label Text="תאריך" />
+            <Label Text="תאריך" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
             <DatePicker
-            Date="{Binding Date}"
-            MaximumDate="{x:Static sys:DateTime.Today}" />
+                FlowDirection="RightToLeft"
+                FontSize="18"
+                Date="{Binding Date}"
+                MinimumDate="{Binding MonthStart}"
+                MaximumDate="{Binding MonthEnd}" />
 
-            <Label Text="הערה" />
+            <Label Text="הערה" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
             <Editor
-            Text="{Binding Note}"
-            AutoSize="TextChanges"
-            MinimumHeightRequest="80" />
+                FontSize="18"
+                FlowDirection="RightToLeft"
+                Text="{Binding Note}"
+                AutoSize="TextChanges"
+                MinimumHeightRequest="80" />
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
                 <Button Text="ביטול" Grid.Column="0"
@@ -38,7 +58,6 @@
                 <Button Text="שמירה" Grid.Column="1"
                     Command="{Binding SaveCommand}" />
             </Grid>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
