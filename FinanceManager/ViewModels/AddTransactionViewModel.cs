@@ -13,13 +13,20 @@ public class AddTransactionViewModel : INotifyPropertyChanged
     private readonly LocalDbService _db;
     private readonly TransactionDbService _txService;
     private readonly MonthService _month;
+
+    private bool _isDropdownOpen;
+    public bool IsDropdownOpen
+    {
+        get => _isDropdownOpen;
+        set { _isDropdownOpen = value; OnPropertyChanged(); }
+    }
+
     public bool HasCategories => Categories.Any();
     public bool NoCategories => !HasCategories;
-
+    public ICommand ToggleDropdownCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
     public DateTime MonthStart => new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-
     public DateTime MonthEnd => MonthStart.AddMonths(1).AddDays(-1);
 
     public ObservableCollection<Category> Categories { get; } = new();
@@ -28,7 +35,14 @@ public class AddTransactionViewModel : INotifyPropertyChanged
     public Category? SelectedCategory
     {
         get => _selectedCategory;
-        set { _selectedCategory = value; OnPropertyChanged(); }
+        set
+        {
+            if (_selectedCategory == value) return;
+            _selectedCategory = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(SelectedCategoryDisplay));
+            IsDropdownOpen = false; // Closed after selection
+        }
     }
 
     private string _amountText = string.Empty;
@@ -53,6 +67,8 @@ public class AddTransactionViewModel : INotifyPropertyChanged
     }
 
     public EntryType EntryType { get; private set; } = EntryType.Expense;
+    public string SelectedCategoryDisplay => SelectedCategory?.Name ?? "בחר קטגוריה";
+
 
     public AddTransactionViewModel(LocalDbService db, MonthService month)
     {
@@ -60,20 +76,37 @@ public class AddTransactionViewModel : INotifyPropertyChanged
         _month = month;
         _txService = new TransactionDbService(db.Conn);
 
+        // When the category collection changes, update the HasCategories and NoCategories bindings
+        Categories.CollectionChanged += (_, __) =>
+        {
+            OnPropertyChanged(nameof(HasCategories));
+            OnPropertyChanged(nameof(NoCategories));
+        };
+
         SaveCommand = new Command(async () => await SaveAsync());
         CancelCommand = new Command(async () => await CancelAsync());
+        ToggleDropdownCommand = new Command(() => IsDropdownOpen = !IsDropdownOpen);
+
     }
 
     public void SetType(EntryType type) => EntryType = type;
 
     public async Task LoadAsync()
     {
-        if (Categories.Count > 0) return;
+        var all = await _db.GetAllAsync<Category>();
+
         Categories.Clear();
-        var cats = await _db.GetAllAsync<Category>();
-        foreach (var c in cats) Categories.Add(c);
-        SelectedCategory ??= Categories.FirstOrDefault();
+        foreach (var c in all.OrderBy(c => c.Name))
+            Categories.Add(c);
+
+        SelectedCategory = null;
+
+        // Update the Notifications and Picker UI
+        OnPropertyChanged(nameof(HasCategories));
+        OnPropertyChanged(nameof(NoCategories));
+        OnPropertyChanged(nameof(SelectedCategoryDisplay));
     }
+
 
     public async Task SaveAsync()
     {
