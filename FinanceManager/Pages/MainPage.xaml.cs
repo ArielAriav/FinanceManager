@@ -45,17 +45,44 @@ public partial class MainPage : ContentPage
 
     // Open the My Envelopes page
     private async void OnMyEnvelopesClicked(object sender, EventArgs e)
-        => await Navigation.PushModalAsync(new MyEnvelopesPage());
+    {
+        var page = new MyEnvelopesPage();
+        page.Disappearing += OnModalClosedRefresh;
+        await Navigation.PushModalAsync(page);
+    }
 
     // Open the Add Transaction page
     private async void OnAddTransactionClicked(object sender, EventArgs e)
-        => await Navigation.PushModalAsync(new AddTransactionPage());
+    {
+        var page = new AddTransactionPage();
 
+        // Refresh when the add screen closes
+        page.Disappearing += OnModalClosedRefresh;
+
+        await Navigation.PushModalAsync(page);
+    }
     // Open the Category Management page
     private async void OnManageCategoriesClicked(object sender, EventArgs e)
-        => await Navigation.PushModalAsync(new ManageCategoriesPage());
+    {
+        var page = new ManageCategoriesPage();
+        page.Disappearing += OnModalClosedRefresh;
+        await Navigation.PushModalAsync(page);
+    }
 
     // Open Budget Management page
     private async void OnManageBudgetClicked(object sender, EventArgs e)
-        => await Navigation.PushModalAsync(new ManageBudgetPage());
+    {
+        var page = new ManageBudgetPage();
+        page.Disappearing += OnModalClosedRefresh;
+        await Navigation.PushModalAsync(page);
+    }
+
+    // Shared handler: disconnects to prevent leakage, then reloads
+    private async void OnModalClosedRefresh(object? sender, EventArgs e)
+    {
+        if (sender is Page p)
+            p.Disappearing -= OnModalClosedRefresh;
+
+        await _vm.LoadAsync();
+    }
 }

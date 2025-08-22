@@ -5,7 +5,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:FinanceManager.ViewModels"
     x:DataType="vm:MainViewModel"
+    xmlns:m="clr-namespace:FinanceManager.Models"
     Title="Finance Manager">
+
 
     <Grid Padding="16" RowSpacing="12" BackgroundColor="White"
         RowDefinitions="Auto,*,Auto">
@@ -20,7 +22,7 @@
             <!-- Arrow to previous month  -->
             <Button Grid.Column="0"
                     Text="❮"
-                    TextColor="grey"
+                    TextColor="gray"
                     FontSize="22"
                     WidthRequest="48" HeightRequest="48"
                     Padding="0"
@@ -30,7 +32,7 @@
             <!-- Name of the month in the center -->
             <Label  Grid.Column="1"
                     Text="{Binding DisplayMonth}"
-                    TextColor="grey"
+                    TextColor="gray"
                     FontAttributes="Bold"
                     FontSize="18"
                     HorizontalTextAlignment="Center"
@@ -39,7 +41,7 @@
             <!-- Arrow to next month -->
             <Button Grid.Column="2"
                     Text="❯"
-                    TextColor="grey"
+                    TextColor="gray"
                     FontSize="22"
                     WidthRequest="48" HeightRequest="48"
                     Padding="0"
@@ -52,7 +54,7 @@
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding Transactions}"
                         SelectionMode="None"
-                        BackgroundColor="White">
+                        >
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="6" />
             </CollectionView.ItemsLayout>
@@ -74,16 +76,15 @@
 
             <!-- There is data for the month -->
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Padding="6" ColumnSpacing="8"
-                          ColumnDefinitions="Auto,*,Auto">
-                        <Label Grid.Column="0" Text="{Binding TypeText}" FontAttributes="Bold" />
+                <DataTemplate x:DataType="m:TransactionRow">
+                    <Grid Padding="6" ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto">
+                        <Label Grid.Column="0" Text="{Binding TypeText}" FontAttributes="Bold"/>
                         <VerticalStackLayout Grid.Column="1" Spacing="2">
-                            <Label Text="{Binding CategoryName}" />
-                            <Label Text="{Binding WhenText}" FontSize="12" />
+                            <Label Text="{Binding CategoryName}"/>
+                            <Label Text="{Binding WhenText}" FontSize="12"/>
                         </VerticalStackLayout>
                         <Label Grid.Column="2" Text="{Binding AmountText}"
-                               FontAttributes="Bold" HorizontalTextAlignment="End" />
+                   FontAttributes="Bold" HorizontalTextAlignment="End"/>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

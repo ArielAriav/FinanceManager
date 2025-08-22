@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:sys="clr-namespace:System;assembly=netstandard"
              x:Class="FinanceManager.Pages.AddTransactionPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="AddTransactionPage">
+    <Grid>
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="14">
 
@@ -14,12 +16,24 @@
                    IsVisible="{Binding NoCategories}" 
                    TextColor="Gray"/>
 
-            <Picker ItemsSource="{Binding Categories}"
-                    ItemDisplayBinding="{Binding Name}"
-                    SelectedItem="{Binding SelectedCategory}"
-                    IsVisible="{Binding HasCategories}" />
-
-            <Button Text="לניהול הקטגוריות שלי"
+                <!-- The selection field, clicking opens the dropdown -->
+                <Border Stroke="{AppThemeBinding Light='#DDDDDD', Dark='#444444'}"
+                        IsVisible="{Binding HasCategories}"
+                        StrokeThickness="1" StrokeShape="RoundRectangle 10"      
+                        BackgroundColor="{AppThemeBinding Light='White', Dark='#1E1E1E'}"
+                        Padding="12,10" Margin="0,4,0,6" >
+                    <Grid ColumnDefinitions="*,Auto" FlowDirection="RightToLeft">
+                        <Label Text="{Binding SelectedCategoryDisplay}"
+                               FontSize="18" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="▾" FontSize="18"
+                               VerticalOptions="Center" Opacity="0.7" Margin="6,0,0,0" />
+                    </Grid>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleDropdownCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
+            
+                <Button Text="לניהול הקטגוריות שלי"
                     HorizontalOptions="End"
                     BackgroundColor="Transparent"
                     TextColor="#6750A4"
@@ -60,4 +74,55 @@
             </Grid>
         </VerticalStackLayout>
     </ScrollView>
+        <!-- An overlay layer that opens above the page -->
+        <Grid IsVisible="{Binding IsDropdownOpen}"
+              BackgroundColor="#66000000"
+              InputTransparent="False"
+              ZIndex="10">
+
+            <!-- Clicking outside closes -->
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ToggleDropdownCommand}" />
+            </Grid.GestureRecognizers>
+
+            <!-- The list card, located at the top -->
+            <Border HorizontalOptions="Fill"
+                    VerticalOptions="Start"
+                    Margin="20,120,20,0"
+                    Stroke="{AppThemeBinding Light='#DDDDDD', Dark='#444444'}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="{AppThemeBinding Light='White', Dark='#1E1E1E'}">
+
+                <CollectionView ItemsSource="{Binding Categories}"
+                                SelectionMode="Single"
+                                SelectedItem="{Binding SelectedCategory}">  
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border x:Name="Cell" Padding="12" StrokeThickness="0">
+                                <Label Text="{Binding Name}" FontSize="18"  FlowDirection="RightToLeft"/>
+
+                                <!-- Background color for selected item -->
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor"
+                                                        Value="{AppThemeBinding Light='#F5F5F5', Dark='#2A2A2A'}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Border>
+        </Grid>
+    </Grid>
 </ContentPage>
