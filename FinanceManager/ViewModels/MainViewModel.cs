@@ -11,6 +11,7 @@ public partial class MainViewModel : ObservableObject
 {
     private readonly LocalDbService _db;
     private readonly MonthService _month;
+    static int ToYearMonth(DateTime d) => d.Year * 100 + d.Month;
 
     public ObservableCollection<TransactionRow> Transactions { get; } = new();
 
@@ -39,30 +40,25 @@ public partial class MainViewModel : ObservableObject
     {
         Transactions.Clear();
 
-        // begin and end of selected month in local time, then convert to UTC
-        var startLocal = new DateTime(CurrentMonth.Year, CurrentMonth.Month, 1, 0, 0, 0, DateTimeKind.Local);
-        var endLocal = startLocal.AddMonths(1);
-        var startUtc = startLocal.ToUniversalTime();
-        var endUtc = endLocal.ToUniversalTime();
+        var ym = ToYearMonth(CurrentMonth);
 
+        // Mapping categories
         var cats = await _db.GetAllAsync<Category>();
         var catMap = cats.ToDictionary(c => c.Id, c => c.Name);
 
-        var all = await _db.GetAllAsync<Transaction>();
+        // Effective pumping by month
+        var list = await _db.Conn.Table<Transaction>()
+                        .Where(t => t.YearMonth == ym)
+                        .OrderByDescending(t => t.OccurredAtUtc)
+                        .ToListAsync();
 
-        var monthItems = all
-            .Where(t => t.OccurredAtUtc >= startUtc && t.OccurredAtUtc < endUtc)
-            .OrderByDescending(t => t.OccurredAtUtc);
-
-        var culture = CultureInfo.GetCultureInfo("he-IL");
-
-        foreach (var t in monthItems)
+        foreach (var t in list)
         {
             var name = catMap.TryGetValue(t.CategoryId, out var nm) ? nm : "קטגוריה";
             var typeText = t.Type == EntryType.Expense ? "הוצאה" : "הכנסה";
             var signed = t.Type == EntryType.Expense ? -t.Amount : t.Amount;
-            var amountText = string.Format(culture, "{0:C}", signed);
-            var whenText = t.OccurredAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm", culture);
+            var amountText = string.Format(CultureInfo.CurrentCulture, "{0:C}", signed);
+            var whenText = t.OccurredAtUtc.ToLocalTime().ToString("dd/MM/yyyy", CultureInfo.CurrentCulture);
 
             Transactions.Add(new TransactionRow(t.Id, typeText, name, amountText, whenText));
         }

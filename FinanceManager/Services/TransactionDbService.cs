@@ -40,8 +40,8 @@ namespace FinanceManager.Services
 
 
         // List of transactions by category and by month
-        public Task<List<Models.Transaction>> GetTransactionsAsync(int categoryId, int yearMonth) =>
-            _conn.Table<Models.Transaction>()
+        public Task<List<Transaction>> GetTransactionsAsync(int categoryId, int yearMonth) =>
+            _conn.Table<Transaction>()
                 .Where(t => t.CategoryId == categoryId && t.YearMonth == yearMonth)
                 .OrderByDescending(t => t.OccurredAtUtc)
                 .ToListAsync();
@@ -55,5 +55,10 @@ namespace FinanceManager.Services
             return await _conn.ExecuteScalarAsync<decimal>(sql, categoryId, yearMonth, Models.EntryType.Expense);
         }
 
+        public Task<List<Transaction>> GetByMonthAsync(int yearMonth) =>
+          _conn.Table<Transaction>()
+         .Where(t => t.YearMonth == yearMonth)
+         .OrderByDescending(t => t.OccurredAtUtc)
+         .ToListAsync();
     }
 }
