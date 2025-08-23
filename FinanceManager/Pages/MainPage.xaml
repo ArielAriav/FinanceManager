@@ -76,8 +76,9 @@
 
             <!-- There is data for the month -->
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="m:TransactionRow">
-                    <Grid Padding="6" ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto">
+                <DataTemplate>
+                    <Grid Padding="6" ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto"
+                          FlowDirection="RightToLeft">
                         <Label Grid.Column="0" Text="{Binding TypeText}" FontAttributes="Bold"/>
                         <VerticalStackLayout Grid.Column="1" Spacing="2">
                             <Label Text="{Binding CategoryName}"/>
