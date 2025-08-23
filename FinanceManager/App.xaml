@@ -86,6 +86,15 @@
                 Value="{AppThemeBinding Light=#555555, Dark=#BBBBBB}" />
             </Style>
 
+            <Style TargetType="Shell">
+                <Setter Property="BackgroundColor"
+            Value="{AppThemeBinding Light=White, Dark=#121212}" />
+                <Setter Property="ForegroundColor"
+            Value="{AppThemeBinding Light=Black, Dark=White}" />
+                <Setter Property="TitleColor"
+            Value="{AppThemeBinding Light=Black, Dark=White}" />
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

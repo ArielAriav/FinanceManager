@@ -9,7 +9,7 @@
     Title="Finance Manager">
 
 
-    <Grid Padding="16" RowSpacing="12" BackgroundColor="White"
+    <Grid Padding="16" RowSpacing="12"
         RowDefinitions="Auto,*,Auto">
 
         <!-- Header: previous | month | next -->
@@ -53,8 +53,7 @@
         <!-- The list occupies the entire middle area. -->
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding Transactions}"
-                        SelectionMode="None"
-                        >
+                        SelectionMode="None">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="6" />
             </CollectionView.ItemsLayout>
@@ -74,19 +73,30 @@
                 </Grid>
             </CollectionView.EmptyView>
 
-            <!-- There is data for the month -->
+            <!-- Data for the current month -->
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Padding="6" ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto"
-                          FlowDirection="RightToLeft">
-                        <Label Grid.Column="0" Text="{Binding TypeText}" FontAttributes="Bold"/>
-                        <VerticalStackLayout Grid.Column="1" Spacing="2">
-                            <Label Text="{Binding CategoryName}"/>
-                            <Label Text="{Binding WhenText}" FontSize="12"/>
-                        </VerticalStackLayout>
-                        <Label Grid.Column="2" Text="{Binding AmountText}"
-                   FontAttributes="Bold" HorizontalTextAlignment="End"/>
-                    </Grid>
+                <DataTemplate x:DataType="m:TransactionRow">
+                    <Border
+                        Margin="0,2"
+                        Padding="5"
+                        BackgroundColor="AliceBlue"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 10">
+                        <Grid ColumnSpacing="2" ColumnDefinitions="Auto,Auto,*,Auto" FlowDirection="RightToLeft">
+                            <Label Grid.Column="0" Text="{Binding TypeText}" FontAttributes="Bold"
+                                   VerticalOptions="Center" FontSize="18"/>
+                            <Image Grid.Column="1"
+                                   Source="line_symbol.png"
+                                   Aspect="AspectFit"
+                                   WidthRequest="30" HeightRequest="30"/>
+                            <VerticalStackLayout Grid.Column="2" Spacing="2">
+                                <Label Text="{Binding CategoryName}" FontSize="18" />
+                                <Label Text="{Binding WhenText}" FontSize="16" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="3" Text="{Binding AmountText}" FontAttributes="Bold"
+                                   HorizontalTextAlignment="End" VerticalOptions="Center"/>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

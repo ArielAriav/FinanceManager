@@ -34,8 +34,6 @@ public partial class MainViewModel : ObservableObject
         _month = month;
     }
 
-    public record TransactionRow(int Id, string TypeText, string CategoryName, string AmountText, string WhenText);
-
     public async Task LoadAsync()
     {
         Transactions.Clear();
