@@ -53,9 +53,9 @@
         <Border Grid.Row="1"
                 Margin="0,6,0,0"
                 Padding="4"
-                Stroke="gray"
+                Stroke="#5B33D6"
                 StrokeThickness="1"
-                BackgroundColor="Transparent"
+                BackgroundColor="#F3EEFF"
                 StrokeShape="RoundRectangle 24"
                 HorizontalOptions="Center">
             <Grid ColumnDefinitions="*,*"
@@ -72,13 +72,13 @@
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="BackgroundColor" Value="Transparent"/>
-                            <Setter Property="TextColor" Value="gray"/>
+                            <Setter Property="TextColor" Value="#5B33D6"/>
                             <Style.Triggers>
                                 <!-- כאשר מצב התצוגה הוא הוצאות -->
                                 <DataTrigger TargetType="Button"
                                      Binding="{Binding IsExpensesSelected}"
                                      Value="True">
-                                    <Setter Property="BackgroundColor" Value="gray"/>
+                                    <Setter Property="BackgroundColor" Value="#5B33D6"/>
                                     <Setter Property="TextColor" Value="White"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -98,13 +98,13 @@
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="BackgroundColor" Value="Transparent"/>
-                            <Setter Property="TextColor" Value="gray"/>
+                            <Setter Property="TextColor" Value="#5B33D6"/>
                             <Style.Triggers>
                                 <!-- כאשר מצב התצוגה הוא הכנסות -->
                                 <DataTrigger TargetType="Button"
                                      Binding="{Binding IsIncomeSelected}"
                                      Value="True">
-                                    <Setter Property="BackgroundColor" Value="gray"/>
+                                    <Setter Property="BackgroundColor" Value="#5B33D6"/>
                                     <Setter Property="TextColor" Value="White"/>
                                 </DataTrigger>
                             </Style.Triggers>

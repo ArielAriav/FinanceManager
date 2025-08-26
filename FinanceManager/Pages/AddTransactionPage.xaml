@@ -8,6 +8,7 @@
     <Grid>
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="14">
+            
 
             <Label Text="קטגוריה" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
             <Label Text="אין קטגוריות זמינות"
