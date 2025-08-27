@@ -64,52 +64,49 @@
                 <!-- הוצאות -->
                 <Button Text="הוצאות"
                         Command="{Binding ShowExpensesCommand}"
-                        CommandParameter="Expense"
-                        Padding="18,10"
-                        CornerRadius="24"
-                        FontAttributes="Bold"
-                        MinimumWidthRequest="100">
-                    <Button.Style>
-                        <Style TargetType="Button">
+                        Style="{StaticResource ToggleBtn}">
+                    <Button.Triggers>
+                        <!-- כשהוצאות נבחר -->
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                Path=BindingContext.IsExpensesSelected}"
+                                     Value="True">
+                            <Setter Property="BackgroundColor" Value="#5B33D6"/>
+                            <Setter Property="TextColor" Value="White"/>
+                        </DataTrigger>
+
+                        <!-- כשהוצאות לא נבחר -->
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                Path=BindingContext.IsExpensesSelected}"
+                                     Value="False">
                             <Setter Property="BackgroundColor" Value="Transparent"/>
                             <Setter Property="TextColor" Value="#5B33D6"/>
-                            <Style.Triggers>
-                                <!-- כאשר מצב התצוגה הוא הוצאות -->
-                                <DataTrigger TargetType="Button"
-                                     Binding="{Binding IsExpensesSelected}"
-                                     Value="True">
-                                    <Setter Property="BackgroundColor" Value="#5B33D6"/>
-                                    <Setter Property="TextColor" Value="White"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
+                        </DataTrigger>
+                    </Button.Triggers>
                 </Button>
 
                 <!-- הכנסות -->
                 <Button Grid.Column="1"
                         Text="הכנסות"
                         Command="{Binding ShowIncomeCommand}"
-                        CommandParameter="Income"
-                        Padding="18,10"
-                        CornerRadius="24"
-                        FontAttributes="Bold"
-                        MinimumWidthRequest="100">
-                    <Button.Style>
-                        <Style TargetType="Button">
+                        Style="{StaticResource ToggleBtn}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                Path=BindingContext.IsIncomeSelected}"
+                                     Value="True">
+                            <Setter Property="BackgroundColor" Value="#5B33D6"/>
+                            <Setter Property="TextColor" Value="White"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                Path=BindingContext.IsIncomeSelected}"
+                                     Value="False">
                             <Setter Property="BackgroundColor" Value="Transparent"/>
                             <Setter Property="TextColor" Value="#5B33D6"/>
-                            <Style.Triggers>
-                                <!-- כאשר מצב התצוגה הוא הכנסות -->
-                                <DataTrigger TargetType="Button"
-                                     Binding="{Binding IsIncomeSelected}"
-                                     Value="True">
-                                    <Setter Property="BackgroundColor" Value="#5B33D6"/>
-                                    <Setter Property="TextColor" Value="White"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
+                        </DataTrigger>
+                    </Button.Triggers>
                 </Button>
             </Grid>
         </Border>
@@ -159,16 +156,15 @@
 
                             <!-- Category name + budget line (if exist) -->
                             <VerticalStackLayout Spacing="2">
-                                <Label Text="{Binding CategoryName}" FontSize="18" />
-                                <Label Text="{Binding BudgetText}" FontSize="12"
-                                       TextColor="#666666"
+                                <Label Text="{Binding CategoryName}" FontAttributes="Bold"/>
+                                <Label Text="{Binding BudgetText}"
                                        IsVisible="{Binding HasBudget}" />
                             </VerticalStackLayout>
 
                             <!-- The total amount for the category -->
                             <Label Grid.Column="1"
                                    Text="{Binding AmountText}"
-                                   FontAttributes="Bold"
+                                   
                                    HorizontalTextAlignment="End"
                                    VerticalOptions="Center" />
                         </Grid>
@@ -182,13 +178,13 @@
           ColumnDefinitions="*,*"
           RowDefinitions="Auto,Auto"
           ColumnSpacing="12" RowSpacing="10">
-            <Button Grid.Column="0" Grid.Row="0" Text="המעטפות שלי" HeightRequest="44"
+            <Button Grid.Column="0" Grid.Row="0" Text="המעטפות שלי" 
               Clicked="OnMyEnvelopesClicked" />
-            <Button Grid.Column="1" Grid.Row="0" Text="הוספת הכנסה/הוצאה" HeightRequest="44"
+            <Button Grid.Column="1" Grid.Row="0" Text="הוספת הכנסה/הוצאה"  
               Clicked="OnAddTransactionClicked" />
-            <Button Grid.Column="0" Grid.Row="1" Text="ניהול קטגוריות" HeightRequest="44"
+            <Button Grid.Column="0" Grid.Row="1" Text="ניהול קטגוריות"
                     Clicked="OnManageCategoriesClicked"/>
-            <Button Grid.Column="1" Grid.Row="1" Text="ניהול תקציבים" HeightRequest="44"
+            <Button Grid.Column="1" Grid.Row="1" Text="ניהול תקציבים" 
                     Clicked="OnManageBudgetClicked"/>
         </Grid>
     </Grid>

@@ -1,100 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Application
-    x:Class="FinanceManager.App"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-
+<Application x:Class="FinanceManager.App" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Application.Resources>
         <ResourceDictionary>
-
-            <!-- Sizes -->
-            <x:Double x:Key="BodySize">16</x:Double>
-            <x:Double x:Key="TitleSize">22</x:Double>
-
-            <!-- Page background, theme aware -->
-            <Style TargetType="ContentPage">
-                <Setter Property="BackgroundColor"
-                Value="{AppThemeBinding Light=White, Dark=#121212}" />
-            </Style>
-
-            <!-- Common text color for labels, theme aware -->
-            <Style TargetType="Label">
-                <Setter Property="FontFamily" Value="Rubik" />
-                <Setter Property="FontSize"   Value="{StaticResource BodySize}" />
-                <Setter Property="TextColor"
-                Value="{AppThemeBinding Light=Black, Dark=White}" />
-            </Style>
-
-            <!-- Buttons default font, keep platform colors -->
-            <Style TargetType="Button">
-                <Setter Property="FontFamily" Value="RubikMedium" />
-                <Setter Property="FontSize"   Value="{StaticResource BodySize}" />
-            </Style>
-
-            <!-- Entries, Editors, Pickers, DatePickers with theme aware text -->
-            <Style TargetType="Entry">
-                <Setter Property="FontFamily" Value="Rubik" />
-                <Setter Property="FontSize"   Value="{StaticResource BodySize}" />
-                <Setter Property="TextColor"
-                Value="{AppThemeBinding Light=Black, Dark=White}" />
-                <Setter Property="PlaceholderColor"
-                Value="{AppThemeBinding Light=#888888, Dark=#AAAAAA}" />
-            </Style>
-
-            <Style TargetType="Editor">
-                <Setter Property="FontFamily" Value="Rubik" />
-                <Setter Property="FontSize"   Value="{StaticResource BodySize}" />
-                <Setter Property="TextColor"
-                Value="{AppThemeBinding Light=Black, Dark=White}" />
-                <Setter Property="PlaceholderColor"
-                Value="{AppThemeBinding Light=#888888, Dark=#AAAAAA}" />
-            </Style>
-
-            <Style TargetType="Picker">
-                <Setter Property="FontFamily" Value="Rubik" />
-                <Setter Property="FontSize"   Value="{StaticResource BodySize}" />
-                <Setter Property="TextColor"
-                Value="{AppThemeBinding Light=Black, Dark=White}" />
-            </Style>
-
-            <Style TargetType="DatePicker">
-                <Setter Property="FontFamily" Value="Rubik" />
-                <Setter Property="FontSize"   Value="{StaticResource BodySize}" />
-                <Setter Property="TextColor"
-                Value="{AppThemeBinding Light=Black, Dark=White}" />
-            </Style>
-
-            <!-- CollectionView background, theme aware -->
-            <Style TargetType="CollectionView">
-                <Setter Property="BackgroundColor"
-                Value="{AppThemeBinding Light=White, Dark=#121212}" />
-            </Style>
-
-            <!-- Title label style -->
-            <Style x:Key="Title1" TargetType="Label">
-                <Setter Property="FontFamily" Value="RubikBold" />
-                <Setter Property="FontSize"   Value="{StaticResource TitleSize}" />
-                <Setter Property="TextColor"
-                Value="{AppThemeBinding Light=Black, Dark=White}" />
-            </Style>
-
-            <!-- Caption label style, for secondary text like dates -->
-            <Style x:Key="CaptionLabel" TargetType="Label">
-                <Setter Property="FontFamily" Value="Rubik" />
-                <Setter Property="FontSize"   Value="12" />
-                <Setter Property="TextColor"
-                Value="{AppThemeBinding Light=#555555, Dark=#BBBBBB}" />
-            </Style>
-
-            <Style TargetType="Shell">
-                <Setter Property="BackgroundColor"
-            Value="{AppThemeBinding Light=White, Dark=#121212}" />
-                <Setter Property="ForegroundColor"
-            Value="{AppThemeBinding Light=Black, Dark=White}" />
-                <Setter Property="TitleColor"
-            Value="{AppThemeBinding Light=Black, Dark=White}" />
-            </Style>
-
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

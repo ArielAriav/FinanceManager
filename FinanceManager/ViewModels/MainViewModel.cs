@@ -74,7 +74,7 @@ public partial class MainViewModel : ObservableObject
 
         // Only the records for the month and type (expense/income) are brought in.
         var items = await _db.Conn.Table<Transaction>()
-           .Where(t => t.YearMonth == ym && t.Type == currentMode)
+           .Where(t => t.YearMonth == ym && t.Type == CurrentMode)
            .ToListAsync();
 
         // Sum by category
@@ -86,7 +86,7 @@ public partial class MainViewModel : ObservableObject
 
         // Monthly budgets – for expenses only
         Dictionary<int, decimal> budgets = new();
-        if (currentMode == EntryType.Expense)
+        if (CurrentMode == EntryType.Expense)
         {
             var monthBudgets = await _db.Conn.Table<Budget>()
                 .Where(b => b.YearMonth == ym)
@@ -95,18 +95,18 @@ public partial class MainViewModel : ObservableObject
             budgets = monthBudgets.ToDictionary(b => b.CategoryId, b => b.MonthlyAmount);
         }
 
-        var typeText = currentMode == EntryType.Expense ? "הוצאה" : "הכנסה";
+        var typeText = CurrentMode == EntryType.Expense ? "הוצאה" : "הכנסה";
 
         foreach (var s in sumsByCategory)
         {
             var name = catMap.TryGetValue(s.CategoryId, out var nm) ? nm : "קטגוריה";
 
             // Amount format: minus expense, plus income
-            var signed = currentMode == EntryType.Expense ? -s.Total : s.Total;
+            var signed = CurrentMode == EntryType.Expense ? -s.Total : s.Total;
             var amountText = string.Format(culture, "{0:C}", signed);
 
             string? budgetText = null;
-            if (currentMode == EntryType.Expense && budgets.TryGetValue(s.CategoryId, out var budget))
+            if (CurrentMode == EntryType.Expense && budgets.TryGetValue(s.CategoryId, out var budget))
             {
                 budgetText = string.Format(culture, "{0:C} / {1:C}", s.Total, budget);
             }

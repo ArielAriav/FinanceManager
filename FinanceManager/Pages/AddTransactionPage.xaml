@@ -38,11 +38,11 @@
                     HorizontalOptions="End"
                     BackgroundColor="Transparent"
                     TextColor="#6750A4"
-                    Padding="0"
+                    Padding="0,10"
                     FontAttributes="Bold"
                     Clicked="OnManageCategoriesClicked" />
 
-            <Label Text="סכום" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold"/>
+            <Label Text="סכום" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" Padding="0,10"/>
             <Entry
                 Text="{Binding AmountText}"
                 FlowDirection="RightToLeft"
