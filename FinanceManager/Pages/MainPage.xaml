@@ -9,8 +9,8 @@
     Title="Finance Manager">
 
 
-    <Grid Padding="16" RowSpacing="12" BackgroundColor="White"
-        RowDefinitions="Auto,*,Auto">
+    <Grid Padding="16" RowSpacing="12"
+        RowDefinitions="Auto,Auto,*,Auto">
 
         <!-- Header: previous | month | next -->
         <Grid Grid.Row="0"
@@ -50,11 +50,72 @@
                     IsEnabled="{Binding CanGoNext}" />
         </Grid>
 
+        <Border Grid.Row="1"
+                Margin="0,6,0,0"
+                Padding="4"
+                Stroke="#5B33D6"
+                StrokeThickness="1"
+                BackgroundColor="#F3EEFF"
+                StrokeShape="RoundRectangle 24"
+                HorizontalOptions="Center">
+            <Grid ColumnDefinitions="*,*"
+                  FlowDirection="RightToLeft">
+
+                <!-- הוצאות -->
+                <Button Text="הוצאות"
+                        Command="{Binding ShowExpensesCommand}"
+                        Style="{StaticResource ToggleBtn}">
+                    <Button.Triggers>
+                        <!-- כשהוצאות נבחר -->
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                Path=BindingContext.IsExpensesSelected}"
+                                     Value="True">
+                            <Setter Property="BackgroundColor" Value="#5B33D6"/>
+                            <Setter Property="TextColor" Value="White"/>
+                        </DataTrigger>
+
+                        <!-- כשהוצאות לא נבחר -->
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                Path=BindingContext.IsExpensesSelected}"
+                                     Value="False">
+                            <Setter Property="BackgroundColor" Value="Transparent"/>
+                            <Setter Property="TextColor" Value="#5B33D6"/>
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+
+                <!-- הכנסות -->
+                <Button Grid.Column="1"
+                        Text="הכנסות"
+                        Command="{Binding ShowIncomeCommand}"
+                        Style="{StaticResource ToggleBtn}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                Path=BindingContext.IsIncomeSelected}"
+                                     Value="True">
+                            <Setter Property="BackgroundColor" Value="#5B33D6"/>
+                            <Setter Property="TextColor" Value="White"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                Path=BindingContext.IsIncomeSelected}"
+                                     Value="False">
+                            <Setter Property="BackgroundColor" Value="Transparent"/>
+                            <Setter Property="TextColor" Value="#5B33D6"/>
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </Grid>
+        </Border>
+
+
         <!-- The list occupies the entire middle area. -->
-        <CollectionView Grid.Row="1"
+        <CollectionView Grid.Row="2"
                         ItemsSource="{Binding Transactions}"
-                        SelectionMode="None"
-                        >
+                        SelectionMode="None">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="6" />
             </CollectionView.ItemsLayout>
@@ -74,35 +135,56 @@
                 </Grid>
             </CollectionView.EmptyView>
 
-            <!-- There is data for the month -->
+            <!-- Data for the current month -->
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Padding="6" ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto"
-                          FlowDirection="RightToLeft">
-                        <Label Grid.Column="0" Text="{Binding TypeText}" FontAttributes="Bold"/>
-                        <VerticalStackLayout Grid.Column="1" Spacing="2">
-                            <Label Text="{Binding CategoryName}"/>
-                            <Label Text="{Binding WhenText}" FontSize="12"/>
-                        </VerticalStackLayout>
-                        <Label Grid.Column="2" Text="{Binding AmountText}"
-                   FontAttributes="Bold" HorizontalTextAlignment="End"/>
-                    </Grid>
+                <DataTemplate x:DataType="m:CategoryRow">
+                    <Border
+                        Margin="0,2"
+                        Padding="8"
+                        BackgroundColor="AliceBlue"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 10">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                      Path=BindingContext.OpenCategoryCommand}"
+                                    CommandParameter="{Binding}" />
+                        </Border.GestureRecognizers>
+
+                        <!-- 2 Columns: texts on the right, sum on the left -->
+                        <Grid ColumnDefinitions="*,Auto" FlowDirection="RightToLeft">
+
+                            <!-- Category name + budget line (if exist) -->
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="{Binding CategoryName}" FontAttributes="Bold"/>
+                                <Label Text="{Binding BudgetText}"
+                                       IsVisible="{Binding HasBudget}" />
+                            </VerticalStackLayout>
+
+                            <!-- The total amount for the category -->
+                            <Label Grid.Column="1"
+                                   Text="{Binding AmountText}"
+                                   
+                                   HorizontalTextAlignment="End"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
         <!-- Buttons at the bottom, always visible -->
-        <Grid Grid.Row="2"
+        <Grid Grid.Row="3"
           ColumnDefinitions="*,*"
           RowDefinitions="Auto,Auto"
           ColumnSpacing="12" RowSpacing="10">
-            <Button Grid.Column="0" Grid.Row="0" Text="המעטפות שלי" HeightRequest="44"
+            <Button Grid.Column="0" Grid.Row="0" Text="המעטפות שלי" 
               Clicked="OnMyEnvelopesClicked" />
-            <Button Grid.Column="1" Grid.Row="0" Text="הוספת הכנסה/הוצאה" HeightRequest="44"
+            <Button Grid.Column="1" Grid.Row="0" Text="הוספת הכנסה/הוצאה"  
               Clicked="OnAddTransactionClicked" />
-            <Button Grid.Column="0" Grid.Row="1" Text="ניהול קטגוריות" HeightRequest="44"
+            <Button Grid.Column="0" Grid.Row="1" Text="ניהול קטגוריות"
                     Clicked="OnManageCategoriesClicked"/>
-            <Button Grid.Column="1" Grid.Row="1" Text="ניהול תקציבים" HeightRequest="44"
+            <Button Grid.Column="1" Grid.Row="1" Text="ניהול תקציבים" 
                     Clicked="OnManageBudgetClicked"/>
         </Grid>
     </Grid>

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using FinanceManager.Models;
 using FinanceManager.Services;
+using Microsoft.Maui.Platform;
 using System.Collections.ObjectModel;
 using System.Globalization;
 
@@ -13,7 +14,8 @@ public partial class MainViewModel : ObservableObject
     private readonly MonthService _month;
     static int ToYearMonth(DateTime d) => d.Year * 100 + d.Month;
 
-    public ObservableCollection<TransactionRow> Transactions { get; } = new();
+    // The list fed into the CollectionView
+    public ObservableCollection<CategoryRow> Transactions { get; } = new();
 
     // Beginning of the current month
     [ObservableProperty]
@@ -28,39 +30,88 @@ public partial class MainViewModel : ObservableObject
     public bool CanGoNext =>
         currentMonth.AddMonths(1) <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
+    public IAsyncRelayCommand ShowExpensesCommand { get; }
+    public IAsyncRelayCommand ShowIncomeCommand { get; }
+    public bool IsExpensesSelected => CurrentMode == EntryType.Expense;
+    public bool IsIncomeSelected => CurrentMode == EntryType.Income;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsExpensesSelected))]
+    [NotifyPropertyChangedFor(nameof(IsIncomeSelected))]
+    private EntryType currentMode = EntryType.Expense;
+
+
     public MainViewModel(LocalDbService db, MonthService month)
     {
         _db = db;
         _month = month;
+
+        ShowExpensesCommand = new AsyncRelayCommand(async () =>
+        {
+            CurrentMode = EntryType.Expense;   
+            await LoadAsync();
+        });
+
+        ShowIncomeCommand = new AsyncRelayCommand(async () =>
+        {
+            CurrentMode = EntryType.Income;
+            await LoadAsync();
+        });
     }
 
-    public record TransactionRow(int Id, string TypeText, string CategoryName, string AmountText, string WhenText);
 
     public async Task LoadAsync()
     {
         Transactions.Clear();
 
         var ym = ToYearMonth(CurrentMonth);
+        var culture = CultureInfo.GetCultureInfo("he-IL");
 
         // Mapping categories
         var cats = await _db.GetAllAsync<Category>();
         var catMap = cats.ToDictionary(c => c.Id, c => c.Name);
 
-        // Effective pumping by month
-        var list = await _db.Conn.Table<Transaction>()
-                        .Where(t => t.YearMonth == ym)
-                        .OrderByDescending(t => t.OccurredAtUtc)
-                        .ToListAsync();
 
-        foreach (var t in list)
+        // Only the records for the month and type (expense/income) are brought in.
+        var items = await _db.Conn.Table<Transaction>()
+           .Where(t => t.YearMonth == ym && t.Type == CurrentMode)
+           .ToListAsync();
+
+        // Sum by category
+        var sumsByCategory = items
+            .GroupBy(t => t.CategoryId)
+            .Select(g => new { CategoryId = g.Key, Total = g.Sum(x => x.Amount) })
+            .OrderByDescending(x => x.Total)
+            .ToList();
+
+        // Monthly budgets – for expenses only
+        Dictionary<int, decimal> budgets = new();
+        if (CurrentMode == EntryType.Expense)
         {
-            var name = catMap.TryGetValue(t.CategoryId, out var nm) ? nm : "קטגוריה";
-            var typeText = t.Type == EntryType.Expense ? "הוצאה" : "הכנסה";
-            var signed = t.Type == EntryType.Expense ? -t.Amount : t.Amount;
-            var amountText = string.Format(CultureInfo.CurrentCulture, "{0:C}", signed);
-            var whenText = t.OccurredAtUtc.ToLocalTime().ToString("dd/MM/yyyy", CultureInfo.CurrentCulture);
+            var monthBudgets = await _db.Conn.Table<Budget>()
+                .Where(b => b.YearMonth == ym)
+                .ToListAsync();
 
-            Transactions.Add(new TransactionRow(t.Id, typeText, name, amountText, whenText));
+            budgets = monthBudgets.ToDictionary(b => b.CategoryId, b => b.MonthlyAmount);
+        }
+
+        var typeText = CurrentMode == EntryType.Expense ? "הוצאה" : "הכנסה";
+
+        foreach (var s in sumsByCategory)
+        {
+            var name = catMap.TryGetValue(s.CategoryId, out var nm) ? nm : "קטגוריה";
+
+            // Amount format: minus expense, plus income
+            var signed = CurrentMode == EntryType.Expense ? -s.Total : s.Total;
+            var amountText = string.Format(culture, "{0:C}", signed);
+
+            string? budgetText = null;
+            if (CurrentMode == EntryType.Expense && budgets.TryGetValue(s.CategoryId, out var budget))
+            {
+                budgetText = string.Format(culture, "{0:C} / {1:C}", s.Total, budget);
+            }
+
+            Transactions.Add(new CategoryRow(s.CategoryId, name, typeText, amountText, budgetText));
         }
     }
 
@@ -72,6 +123,7 @@ public partial class MainViewModel : ObservableObject
         await LoadAsync();
     }
 
+
     [RelayCommand]
     private async Task NextMonthAsync()
     {
@@ -79,4 +131,13 @@ public partial class MainViewModel : ObservableObject
         CurrentMonth = currentMonth.AddMonths(1);
         await LoadAsync();
     }
+
+    [RelayCommand]
+    private async Task OpenCategoryAsync(CategoryRow row)
+    {
+        // TODO: ניווט למסך פירוט לפי row.Id
+        await Application.Current.MainPage.DisplayAlert(
+            "קטגוריה", $"{row.CategoryName}", "סגור");
+    }
+
 }

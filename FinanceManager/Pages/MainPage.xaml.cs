@@ -35,12 +35,9 @@ public partial class MainPage : ContentPage
 
     // Runs every time navigation returns to this page
     // Good place to refresh data after closing a modal add screen
-    protected override async void OnNavigatedTo(NavigatedToEventArgs args)
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
-
-        // Refresh data in case something changed while away
-        await _vm.LoadAsync();
     }
 
     // Open the My Envelopes page
