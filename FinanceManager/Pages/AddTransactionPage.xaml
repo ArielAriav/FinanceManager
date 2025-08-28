@@ -5,76 +5,71 @@
              x:Class="FinanceManager.Pages.AddTransactionPage"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="AddTransactionPage">
-    <Grid>
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="14">
-            
-
-            <Label Text="קטגוריה" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
+    <Grid RowDefinitions="*, Auto">
+    <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="20" Spacing="14">
+                <Label Text="קטגוריה" Style="{StaticResource Headline}"/>
             <Label Text="אין קטגוריות זמינות"
                    FlowDirection="RightToLeft"
                    FontSize="18"
                    IsVisible="{Binding NoCategories}" 
                    TextColor="Gray"/>
 
-                <!-- The selection field, clicking opens the dropdown -->
-                <Border Stroke="{AppThemeBinding Light='#DDDDDD', Dark='#444444'}"
-                        IsVisible="{Binding HasCategories}"
-                        StrokeThickness="1" StrokeShape="RoundRectangle 10"      
-                        BackgroundColor="{AppThemeBinding Light='White', Dark='#1E1E1E'}"
-                        Padding="12,10" Margin="0,4,0,6" >
-                    <Grid ColumnDefinitions="*,Auto" FlowDirection="RightToLeft">
-                        <Label Text="{Binding SelectedCategoryDisplay}"
-                               FontSize="18" VerticalOptions="Center" />
-                        <Label Grid.Column="1" Text="▾" FontSize="18"
-                               VerticalOptions="Center" Opacity="0.7" Margin="6,0,0,0" />
-                    </Grid>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ToggleDropdownCommand}" />
-                    </Border.GestureRecognizers>
-                </Border>
-            
-                <Button Text="לניהול הקטגוריות שלי"
+            <!-- The selection field, clicking opens the dropdown -->
+            <Border Stroke="{AppThemeBinding Light='#DDDDDD', Dark='#444444'}"
+                    IsVisible="{Binding HasCategories}"
+                    StrokeThickness="1" StrokeShape="RoundRectangle 10"      
+                    BackgroundColor="{AppThemeBinding Light='White', Dark='#1E1E1E'}"
+                    Padding="12,10" Margin="0,4,0,6" >
+                <Grid ColumnDefinitions="*,Auto" FlowDirection="RightToLeft">
+                    <Label Text="{Binding SelectedCategoryDisplay}"
+                            FontSize="18" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="▾" FontSize="18"
+                            VerticalOptions="Center" Opacity="0.7" Margin="6,0,0,0" />
+                </Grid>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ToggleDropdownCommand}" />
+                </Border.GestureRecognizers>
+            </Border>
+
+            <Button Text="לניהול הקטגוריות שלי"
                     HorizontalOptions="End"
                     BackgroundColor="Transparent"
                     TextColor="#6750A4"
                     Padding="0,10"
                     FontAttributes="Bold"
-                    Clicked="OnManageCategoriesClicked" />
+                    Clicked="OnManageCategoriesClicked"/> 
 
-            <Label Text="סכום" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" Padding="0,10"/>
+            <Label Text="סכום" Style="{StaticResource Headline}"/>
             <Entry
                 Text="{Binding AmountText}"
-                FlowDirection="RightToLeft"
-                FontSize="18"
+                Style="{StaticResource NormalText}"
                 Keyboard="Numeric"
                 Placeholder="0.00"
-                ClearButtonVisibility="WhileEditing" />
+                ClearButtonVisibility="WhileEditing"/>
 
-            <Label Text="תאריך" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
+            <Label Text="תאריך" Style="{StaticResource Headline}"/>
             <DatePicker
-                FlowDirection="RightToLeft"
-                FontSize="18"
+                Style="{StaticResource NormalText}"
                 Date="{Binding Date}"
                 MinimumDate="{Binding MonthStart}"
-                MaximumDate="{Binding MonthEnd}" />
+                MaximumDate="{Binding MonthEnd}"/>
 
-            <Label Text="הערה" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
-            <Editor
-                FontSize="18"
-                FlowDirection="RightToLeft"
+            <Label Text="הערה" Style="{StaticResource Headline}"/>
+                <Editor
+                Style="{StaticResource NormalText}"
                 Text="{Binding Note}"
-                AutoSize="TextChanges"
-                MinimumHeightRequest="80" />
-
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
-                <Button Text="ביטול" Grid.Column="0"
-                    Command="{Binding CancelCommand}" />
-                <Button Text="שמירה" Grid.Column="1"
-                    Command="{Binding SaveCommand}" />
-            </Grid>
-        </VerticalStackLayout>
+                AutoSize="TextChanges"/>
+            </VerticalStackLayout>
     </ScrollView>
+
+        <!-- Button bar at the bottom -->
+        <Grid Grid.Row="1" Padding="20,8" BackgroundColor="Transparent">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Text="ביטול"  Grid.Column="1" Command="{Binding CancelCommand}" />
+                <Button Text="שמירה" Grid.Column="0" Command="{Binding SaveCommand}" />
+            </Grid>
+        </Grid>
         <!-- An overlay layer that opens above the page -->
         <Grid IsVisible="{Binding IsDropdownOpen}"
               BackgroundColor="#66000000"

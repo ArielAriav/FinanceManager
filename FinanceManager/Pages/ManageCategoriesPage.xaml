@@ -9,24 +9,22 @@
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Padding="16" Spacing="12">
 
-                <Label Text="הוספת קטגוריה" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
+                <Label Text="הוספת קטגוריה" Style="{StaticResource Headline}"/>
                 <Entry Text="{Binding Name}"
+                       Style="{StaticResource NormalText}"
                        Placeholder="לדוגמה: מזון"
-                       FontSize="18"
-                       ClearButtonVisibility="WhileEditing"
-                       FlowDirection="LeftToRight"
-                       HorizontalTextAlignment="End" /> 
+                       ClearButtonVisibility="WhileEditing"/> 
 
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" FlowDirection="RightToLeft">
                     <Button Text="שמור" Command="{Binding SaveCommand}" />
                     <Button Grid.Column="1" Text="חדש" Command="{Binding NewCommand}" />
                 </Grid>
 
-                <Label Text="קטגוריות קיימות" Margin="0,16,0,0" FontSize="20" HorizontalOptions="End" FontFamily="RubikBold" />
+                <Label Text="קטגוריות קיימות" Margin="0,16,0,0" Style="{StaticResource Headline}"/>
 
                 <CollectionView ItemsSource="{Binding Items}"
                                 SelectionMode="Single"
-                                SelectedItem="{Binding Selected}">  
+                                SelectedItem="{Binding Selected}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid Padding="12" ColumnDefinitions="*,Auto" FlowDirection="RightToLeft">
@@ -40,7 +38,7 @@
                                         <VisualState x:Name="Selected">
                                             <VisualState.Setters>
                                                 <Setter Property="BackgroundColor"
-                                Value="{AppThemeBinding Light='#F5F5F5', Dark='#2A2A2A'}" />
+                                                        Value="{AppThemeBinding Light='#F5F5F5', Dark='#2A2A2A'}" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -48,20 +46,18 @@
 
                                 <Label x:Name="NameLbl"
                                        Text="{Binding Name}"
-                                       VerticalOptions="Center"
-                                       FontSize="18" />
+                                       Style="{StaticResource NormalText}"/>
 
                                 <ImageButton Grid.Column="1"
                                              WidthRequest="28" HeightRequest="28"
                                              BackgroundColor="Transparent"
                                              Source="trash.png"
                                              Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCommand}"
-                                             CommandParameter="{Binding .}" />  
+                                             CommandParameter="{Binding .}" />
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-
             </VerticalStackLayout>
         </ScrollView>
 
@@ -71,10 +67,7 @@
                 StrokeThickness="0"
                 Padding="16,10,16,16">
             <Button Text="חזור"
-                    Clicked="OnBackClicked"
-                    HorizontalOptions="Fill"
-                    HeightRequest="44" />
+                    Clicked="OnBackClicked"/>
         </Border>
-        
     </Grid>
 </ContentPage>

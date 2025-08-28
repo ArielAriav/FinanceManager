@@ -156,17 +156,15 @@
 
                             <!-- Category name + budget line (if exist) -->
                             <VerticalStackLayout Spacing="2">
-                                <Label Text="{Binding CategoryName}" FontAttributes="Bold"/>
+                                <Label Text="{Binding CategoryName}" Style="{StaticResource NormalText}" FontAttributes="Bold"/>
                                 <Label Text="{Binding BudgetText}"
                                        IsVisible="{Binding HasBudget}" />
                             </VerticalStackLayout>
 
                             <!-- The total amount for the category -->
                             <Label Grid.Column="1"
-                                   Text="{Binding AmountText}"
-                                   
-                                   HorizontalTextAlignment="End"
-                                   VerticalOptions="Center" />
+                                   Style="{StaticResource NormalText}"
+                                   Text="{Binding AmountText}"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
